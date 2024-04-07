@@ -15,5 +15,5 @@ fn main() {
     println!("{}---", b);
 
     println!("won? {}", b.has_won());
-    println!("ended {}", b.game_ended);
+    println!("ended? {}", b.game_ended);
 }

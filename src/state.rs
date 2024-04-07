@@ -1,13 +1,13 @@
-use std::collections::{HashMap, HashSet};
 use rand::Rng;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 
 #[derive(Debug)]
 pub struct Cell {
     pub is_uncovered: bool, // left mouse button action
-    pub is_flagged: bool, // right mouse button action
-    pub is_mine: bool, // hidden state
-    pub hint_number: u8, // hint number to display in case of uncover/flood
+    pub is_flagged: bool,   // right mouse button action
+    pub is_mine: bool,      // hidden state
+    pub hint_number: u8,    // hint number to display in case of uncover/flood
 }
 
 impl Cell {
@@ -38,7 +38,7 @@ impl Board {
             game_ended: false,
             has_won: false,
         };
-        
+
         let mut rng = rand::thread_rng();
         let mut mine_positions: HashSet<(u8, u8)> = HashSet::new();
         for _ in 0..num_mines {
@@ -52,28 +52,27 @@ impl Board {
                 }
             }
         }
-        
+
         for y in 0..size.1 {
             for x in 0..size.0 {
                 let pos = (x, y);
-                b.cells.insert(pos, Cell::new(mine_positions.contains(&pos)));
+                b.cells
+                    .insert(pos, Cell::new(mine_positions.contains(&pos)));
             }
         }
-        
+
         for y in 0..size.1 {
             for x in 0..size.0 {
                 let pos = (x, y);
                 let count = b.count_neighbors(&pos);
-                let cell = b.get_cell_mut(&pos);
-                if let Some(cell2) = cell {
-                    if cell2.is_mine {
-                        continue;
-                    }
-                    cell2.hint_number = count;
+                let cell = b.get_cell_mut(&pos).unwrap();
+                if cell.is_mine {
+                    continue;
                 }
+                cell.hint_number = count;
             }
         }
-        
+
         b
     }
     pub fn get_cell(self: &Self, pos: &(u8, u8)) -> Option<&Cell> {
@@ -92,10 +91,11 @@ impl Board {
                 let xx = (x + (pos.0 as i8)) as u8;
                 let yy = (y + (pos.1 as i8)) as u8;
                 let cell = self.get_cell(&(xx, yy));
-                if let Some(cell2) = cell {
-                    if cell2.is_mine {
+                match cell {
+                    Some(x) if x.is_mine => {
                         count += 1;
                     }
+                    _ => (),
                 }
             }
         }

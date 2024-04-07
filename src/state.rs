@@ -13,7 +13,7 @@ pub struct Cell {
 impl Cell {
     pub fn new(is_mine: bool) -> Self {
         Cell {
-            is_uncovered: true,
+            is_uncovered: false,
             is_flagged: false,
             is_mine,
             hint_number: 0,
@@ -23,7 +23,6 @@ impl Cell {
 
 #[derive(Debug)]
 pub struct Board {
-    //start_time:
     pub size: (u8, u8),
     pub game_ended: bool,
     pub has_won: bool,
@@ -81,6 +80,48 @@ impl Board {
     pub fn get_cell_mut(self: &mut Self, pos: &(u8, u8)) -> Option<&mut Cell> {
         self.cells.get_mut(pos)
     }
+    pub fn flag(self: &mut Self, pos: &(u8, u8)) {
+        if self.game_ended {
+            return;
+        }
+        let cell = self.get_cell_mut(pos).unwrap();
+        if cell.is_uncovered {
+            return;
+        }
+        cell.is_flagged = !cell.is_flagged;
+    }
+    pub fn uncover(self: &mut Self, pos: &(u8, u8)) {
+        if self.game_ended {
+            return;
+        }
+        let cell_ = self.get_cell_mut(pos);
+        if let Some(cell) = cell_ {
+            if cell.is_uncovered {
+                return;
+            }
+            cell.is_uncovered = true;
+            if cell.is_mine {
+                self.game_ended = true;
+                println!("BOOM!");
+            } else if cell.hint_number == 0 {
+                let neighs = self.get_neighbor_positions(pos);
+                for neigh in neighs {
+                    self.uncover(&neigh);
+                }
+            }
+        }
+    }
+    pub fn has_won(self: &Self) -> bool {
+        for y in 0..self.size.1 {
+            for x in 0..self.size.0 {
+                let cell = self.get_cell(&(x, y)).unwrap();
+                if !cell.is_mine && !cell.is_uncovered {
+                    return false;
+                }
+            }
+        }
+        true
+    }
     fn count_neighbors(self: &Self, pos: &(u8, u8)) -> u8 {
         let mut count: u8 = 0;
         for y in -1..=1i8 {
@@ -100,6 +141,24 @@ impl Board {
             }
         }
         count
+    }
+    fn get_neighbor_positions(self: &Self, pos: &(u8, u8)) -> Vec<(u8, u8)> {
+        let mut v: Vec<(u8, u8)> = Vec::new();
+        let x = pos.0;
+        let y = pos.1;
+        if x > 0 {
+            v.push((x - 1, y));
+        }
+        if y > 0 {
+            v.push((x, y - 1));
+        }
+        if x < self.size.0 - 1 {
+            v.push((x + 1, y));
+        }
+        if y < self.size.1 - 1 {
+            v.push((x, y + 1));
+        }
+        v
     }
 }
 

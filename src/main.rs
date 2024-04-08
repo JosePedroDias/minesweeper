@@ -66,7 +66,10 @@ fn setup(c: &mut EngineContext) {
 fn draw_cell(cell: &Cell, pos: &(u8, u8)) {
     let x = pos.0 as f32;
     let y = pos.1 as f32;
-    let vec = Vec2::new((x - W as f32 * 0.5) * SPRITE_W, (y - H as f32 * 0.5) * SPRITE_W);
+    let vec = Vec2::new(
+        (x - W as f32 * 0.5 + 0.5) * SPRITE_W,
+        (y - H as f32 * 0.5 + 0.5) * SPRITE_W
+    );
     let t = if cell.is_uncovered {
         if cell.is_mine {
             if cell.has_exploded {
@@ -120,17 +123,21 @@ fn update(_c: &mut EngineContext) {
         if x < 0 || x >= state.board.size.0 as i32 || y < 0 || y >= state.board.size.1 as i32 {
             return;
         }
-        println!("pos {:?}", pos);
-        println!("mouse {} {}", x, y);
+        //println!("pos {:?}", pos);
+        //println!("mouse {} {}", x, y);
         
         let pos2 = (x as u8, y as u8);
         
         if is_left_down {
             state.board.uncover(&pos2);
+            if state.board.has_won() {
+                println!("you won!");
+            } else if state.board.game_ended {
+                println!("game ended");
+            }
         } else if is_right_down {
             state.board.flag(&pos2);
         }
-        println!("{}", state.board);
     }
 
     for y in 0..state.board.size.1 {

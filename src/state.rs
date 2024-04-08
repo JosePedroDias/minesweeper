@@ -8,7 +8,7 @@ pub struct Cell {
     pub is_flagged: bool,   // right mouse button action
     pub is_mine: bool,      // hidden state
     pub has_exploded: bool,
-    pub hint_number: u8,    // hint number to display in case of uncover/flood
+    pub hint_number: u8, // hint number to display in case of uncover/flood
 }
 
 impl Cell {

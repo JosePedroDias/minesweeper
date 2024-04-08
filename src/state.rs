@@ -7,6 +7,7 @@ pub struct Cell {
     pub is_uncovered: bool, // left mouse button action
     pub is_flagged: bool,   // right mouse button action
     pub is_mine: bool,      // hidden state
+    pub has_exploded: bool,
     pub hint_number: u8,    // hint number to display in case of uncover/flood
 }
 
@@ -16,6 +17,7 @@ impl Cell {
             is_uncovered: false,
             is_flagged: false,
             is_mine,
+            has_exploded: false,
             hint_number: 0,
         }
     }
@@ -90,19 +92,22 @@ impl Board {
         }
         cell.is_flagged = !cell.is_flagged;
     }
-    pub fn uncover(self: &mut Self, pos: &(u8, u8)) {
+    pub fn uncover(self: &mut Self, pos: &(u8, u8)) -> bool {
         if self.game_ended {
-            return;
+            return false;
         }
         let cell_ = self.get_cell_mut(pos);
         if let Some(cell) = cell_ {
-            if cell.is_uncovered {
-                return;
+            if cell.is_uncovered || cell.is_flagged {
+                return false;
             }
             cell.is_uncovered = true;
             if cell.is_mine {
+                cell.has_exploded = true;
                 self.game_ended = true;
-                println!("BOOM!");
+                //println!("BOOM!");
+                self.uncover_mines();
+                return true;
             } else if cell.hint_number == 0 {
                 let neighs = self.get_neighbor_positions(pos);
                 for neigh in neighs {
@@ -110,6 +115,7 @@ impl Board {
                 }
             }
         }
+        return false;
     }
     pub fn has_won(self: &Self) -> bool {
         for y in 0..self.size.1 {
@@ -159,6 +165,16 @@ impl Board {
             v.push((x, y + 1));
         }
         v
+    }
+    fn uncover_mines(self: &mut Self) {
+        for y in 0..self.size.1 {
+            for x in 0..self.size.0 {
+                let cell = self.get_cell_mut(&(x, y)).unwrap();
+                if cell.is_mine {
+                    cell.is_uncovered = true;
+                }
+            }
+        }
     }
 }
 

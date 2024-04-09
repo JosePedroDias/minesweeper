@@ -27,14 +27,14 @@ const SPRITE_W: f32 = 16.0;
 
 struct State {
     pub board: Board,
-    pub music_playing: bool,
+    //pub music_playing: bool,
 }
 
 impl State {
     pub fn new(_c: &EngineState) -> Self {
         Self {
             board: Board::new((W, H), NUM_MINES),
-        music_playing: false,
+            //music_playing: false,
         }
     }
 }
@@ -52,10 +52,10 @@ fn config(config: GameConfig) -> GameConfig {
 
 fn setup(_state: &mut State, c: &mut EngineContext) {
     // fonts
-    c.load_fonts_from_bytes(&[(
-        "uni",
-        include_bytes!("../assets/fonts/univers-light-normal.ttf"),
-    )]);
+    // c.load_fonts_from_bytes(&[(
+    //     "uni",
+    //     include_bytes!("../assets/fonts/univers-light-normal.ttf"),
+    // )]);
 
     // sprites
     c.load_texture_from_bytes("1", include_bytes!("../assets/sprites/1.png"));
@@ -74,16 +74,16 @@ fn setup(_state: &mut State, c: &mut EngineContext) {
     c.load_texture_from_bytes("unknown", include_bytes!("../assets/sprites/unknown.png"));
 
     // sfx
-    load_sound_from_bytes(
-        "music",
-        include_bytes!("../assets/sfx/comfy-music.ogg"),
-        StaticSoundSettings::new().loop_region(..),
-    );
-    load_sound_from_bytes(
-        "sound",
-        include_bytes!("../assets/sfx/bell-sfx.ogg"),
-        StaticSoundSettings::default(),
-    );
+    // load_sound_from_bytes(
+    //     "music",
+    //     include_bytes!("../assets/sfx/comfy-music.ogg"),
+    //     StaticSoundSettings::new().loop_region(..),
+    // );
+    // load_sound_from_bytes(
+    //     "sound",
+    //     include_bytes!("../assets/sfx/bell-sfx.ogg"),
+    //     StaticSoundSettings::default(),
+    // );
 
     let mut cam = main_camera_mut();
     cam.zoom = 300.0;
@@ -137,32 +137,32 @@ fn update(state: &mut State, _c: &mut EngineContext) {
         exit(0); // TODO
     }
 
-    if is_key_pressed(KeyCode::Return) {
-        play_sound("sound");
-    }
+    // if is_key_pressed(KeyCode::Return) {
+    //     play_sound("sound");
+    // }
 
-    if is_key_pressed(KeyCode::Space) {
-        if state.music_playing {
-            stop_sound("music");
-        } else {
-            play_sound("music");
-        }
+    // if is_key_pressed(KeyCode::Space) {
+    //     if state.music_playing {
+    //         stop_sound("music");
+    //     } else {
+    //         play_sound("music");
+    //     }
 
-        state.music_playing = !state.music_playing;
-    }
+    //     state.music_playing = !state.music_playing;
+    // }
 
     //draw_text("text", vec2(0.0, 3.0), RED, TextAlign::Center);
     
-    draw_text_ex(
-        "text",
-        vec2(0.0, -3.0),
-        TextAlign::Center,
-        TextParams {
-            font: egui::FontId::new(32.0, egui::FontFamily::Name("uni".into())),
-            color: BLUE,
-            ..Default::default()
-        },
-    );
+    // draw_text_ex(
+    //     "text",
+    //     vec2(0.0, -3.0),
+    //     TextAlign::Center,
+    //     TextParams {
+    //         font: egui::FontId::new(32.0, egui::FontFamily::Name("uni".into())),
+    //         color: BLUE,
+    //         ..Default::default()
+    //     },
+    // );
 
     let is_left_down: bool = is_mouse_button_pressed(MouseButton::Left);
     let is_right_down: bool = is_mouse_button_pressed(MouseButton::Right);

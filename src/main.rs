@@ -86,7 +86,22 @@ fn setup(_state: &mut State, c: &mut EngineContext) {
     // );
 
     let mut cam = main_camera_mut();
-    cam.zoom = 300.0;
+    cam.zoom = 280.0;
+    
+    //snippetTest();
+    
+    js_interop();
+}
+
+#[cfg(target_arch = "wasm32")]
+fn js_interop() {
+    let window = web_sys::window().unwrap();
+    let document = window.document().unwrap();
+    document.set_title("title changed from rust");
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn js_interop() {
 }
 
 fn draw_cell(cell: &Cell, pos: &(u8, u8)) {

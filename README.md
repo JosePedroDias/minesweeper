@@ -13,8 +13,20 @@ the sprites are from the tutorial as well.
 
 ## build
 
+    cargo run
+
     cargo build --release --features comfy/ci-release
 
 ## build for web
 
+    trunk serve --open
+
     trunk build --release --features comfy/ci-release
+
+
+## other
+
+- https://rustwasm.github.io/wasm-bindgen/api/web_sys/
+- https://rustwasm.github.io/wasm-bindgen/examples/dom.html
+
+TODO: https://github.com/trunk-rs/trunk/tree/main/examples/vanilla

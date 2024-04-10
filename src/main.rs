@@ -46,6 +46,27 @@ fn config(config: GameConfig) -> GameConfig {
         resolution: ResolutionConfig::Physical(700, 700),
         //resolution: ResolutionConfig::Logical(W as u32, H as u32),
         min_resolution: ResolutionConfig::Physical(128, 128),
+        bloom_enabled: false,
+        lighting_enabled: false,
+        dev: DevConfig { 
+            //show_fps: true,
+            //show_debug: true, // ?
+            //show_editor: true, // ?
+            ..Default::default()
+            //..config.dev.clone()
+        },
+            /*show_lighting_config: (),
+            show_buffers: (),
+            show_fps: (),
+            show_editor: (),
+            show_tiktok_overlay: (), 
+            log_collisions: (),
+            show_ai_target: (),
+            show_linear_acc_target: (),
+            show_angular_acc_target: (),
+            draw_colliders: (), draw_collision_marks: (),
+            show_debug_bullets: (),
+            orig_props: (), collider_outlines: (), show_debug: (), recording_mode: () }*/
         ..config
     }
 }
@@ -149,8 +170,14 @@ fn draw_cell(cell: &Cell, pos: &(u8, u8)) {
 
 fn update(state: &mut State, _c: &mut EngineContext) {
     if is_key_down(KeyCode::Escape) {
+        //c.quit_flag = true;
         exit(0); // TODO
     }
+    
+    /*let mut x = 100.0;
+    let t = get_time() as f32;
+    let x2 = x.lerp(50.0, t);
+    println!("t:{} x2:{}", t, x2);*/
 
     // if is_key_pressed(KeyCode::Return) {
     //     play_sound("sound");

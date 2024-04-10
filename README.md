@@ -5,6 +5,8 @@ minesweeper game in rust for learning purposes
 game logic based on https://www.youtube.com/watch?v=HBrF8LJ0Hfg / https://github.com/zigurous/unity-minesweeper-tutorial
 the sprites are from the tutorial as well.
 
+added a couple of resources and js interop to the game just to exercise those.
+
 
 ## reference
 - https://docs.rs/comfy/latest/comfy/
@@ -29,4 +31,10 @@ the sprites are from the tutorial as well.
 - https://rustwasm.github.io/wasm-bindgen/api/web_sys/
 - https://rustwasm.github.io/wasm-bindgen/examples/dom.html
 
-TODO: https://github.com/trunk-rs/trunk/tree/main/examples/vanilla
+
+
+# TODO
+
+- use get_time
+- use lerp
+- use persistence?

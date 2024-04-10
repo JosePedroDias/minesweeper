@@ -40,12 +40,21 @@ impl Board {
             has_won: false,
         };
 
+        b.add_mines(num_mines);
+
+        b.fill_numbers();
+
+        b
+    }
+    pub fn add_mines(self: &mut Self, num_mines: u16) {
         let mut rng = rand::thread_rng();
         let mut mine_positions: HashSet<(u8, u8)> = HashSet::new();
+        let (w, h) = self.size;
+        
         for _ in 0..num_mines {
             loop {
-                let x = rng.gen_range(0..size.0);
-                let y = rng.gen_range(0..size.1);
+                let x = rng.gen_range(0..w);
+                let y = rng.gen_range(0..h);
                 let pos = (x, y);
                 if !mine_positions.contains(&pos) {
                     mine_positions.insert(pos);
@@ -54,27 +63,26 @@ impl Board {
             }
         }
 
-        for y in 0..size.1 {
-            for x in 0..size.0 {
+        for y in 0..w {
+            for x in 0..h {
                 let pos = (x, y);
-                b.cells
+                self.cells
                     .insert(pos, Cell::new(mine_positions.contains(&pos)));
             }
         }
-
-        for y in 0..size.1 {
-            for x in 0..size.0 {
+    }
+    pub fn fill_numbers(self: &mut Self) {
+        for y in 0..self.size.1 {
+            for x in 0..self.size.0 {
                 let pos = (x, y);
-                let count = b.count_neighbors(&pos);
-                let cell = b.get_cell_mut(&pos).unwrap();
+                let count = self.count_neighbors(&pos);
+                let cell = self.get_cell_mut(&pos).unwrap();
                 if cell.is_mine {
                     continue;
                 }
                 cell.hint_number = count;
             }
         }
-
-        b
     }
     pub fn get_cell(self: &Self, pos: &(u8, u8)) -> Option<&Cell> {
         self.cells.get(pos)
@@ -218,5 +226,21 @@ impl fmt::Display for Board {
             st.push('\n');
         }
         write!(f, "{}", st)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn board_neighbors() {
+        let mut b = Board::new((3, 3), 0);
+        let c = b.get_cell_mut(&(0, 0)).unwrap();
+        c.is_mine = true;
+        
+        b.fill_numbers();
+        
+        assert_eq!(b.get_cell_mut(&(1, 0)).unwrap().hint_number, 1);
     }
 }
